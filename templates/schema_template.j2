@@ -1,0 +1,21 @@
+from pydantic import BaseModel
+
+
+class {{ name }}Base(BaseModel):
+    pass
+
+    class Config:
+        from_attributes = True
+
+
+class {{ name }}Create({{ name }}Base):
+    pass
+
+
+class {{ name }}({{ name }}Base):
+    pass
+
+
+class {{ name }}Update(BaseModel):
+    pass
+

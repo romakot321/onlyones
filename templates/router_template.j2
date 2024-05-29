@@ -1,0 +1,65 @@
+from fastapi import APIRouter, Depends
+from loguru import logger
+
+from app import schemas
+from app.services.{{ lower_name }} import {{ name }}Service
+
+router = APIRouter(
+    prefix='/api/{{ lower_name }}s',
+    tags=["{{ lower_name }}s"],
+)
+
+
+@router.get(
+    '',
+    response_model=list[schemas.{{ lower_name }}.{{ name }}]
+)
+async def get_{{ lower_name }}s(
+        service: {{ name }}Service = Depends()
+):
+    return await service.get_list(game_id)
+
+
+@router.get(
+    '/[{{ lower_name }}_id]',
+    response_model=schemas.{{ lower_name }}.{{ name }}
+)
+async def get_{{ lower_name }}(
+        {{ lower_name }}_id: int,
+        service: {{ name }}Service = Depends()
+):
+    return await service.get({{ lower_name }}_id)
+
+
+@router.post(
+    '',
+    response_model=schemas.{{ lower_name }}.{{ name }}
+)
+async def create_{{ lower_name }}(
+        {{ lower_name }}_schema: schemas.{{ lower_name }}.{{ name }}Create,
+        service: {{ name }}Service = Depends(),
+):
+    return await service.create({{ lower_name }}_schema)
+
+
+@router.patch(
+    '/[{{ lower_name }}_id]',
+    response_model=schemas.{{ lower_name }}.{{ name }}
+)
+async def patch_{{ lower_name }}(
+        {{ lower_name }}_id: int,
+        {{ lower_name }}_schema: schemas.{{ lower_name }}.{{ name }}Update,
+        service: {{ name }}Service = Depends(),
+):
+    return await service.update({{ lower_name }}_id, {{ lower_name }}_schema)
+
+
+@router.delete(
+    '/[{{ lower_name }}_id]',
+)
+async def delete_{{ lower_name }}(
+        {{ lower_name }}_id: int,
+        service: {{ name }}Service = Depends(),
+):
+    return await service.delete({{ lower_name }}_id)
+

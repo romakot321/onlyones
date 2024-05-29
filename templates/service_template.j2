@@ -1,0 +1,38 @@
+from sqlalchemy import select
+
+from app.db import tables
+from app.schemas import {{ lower_name }} as {{ lower_name }}_schemas
+from app.services.base import BaseService
+
+
+class {{ name }}Service(BaseService):
+    base_table = tables.{{ name }}
+
+    async def get_list(self):
+        query = select(tables.{{ name }})
+        query = query.order_by(tables.{{ name }}.id)
+        return await self.session.scalars(query)
+
+    async def get(
+            self,
+            {{ lower_name }}_id: int | None = None,
+    ) -> tables.{{ name }} | None:
+        {{ lower_name }} = await self._get_one(id={{ lower_name }}_id)
+        return {{ lower_name }}
+
+    async def create(
+            self,
+            {{ lower_name }}_schema: {{ lower_name }}_schemas.{{ name }}Create
+    ) -> tables.{{ name }}:
+        return await self._create({{ lower_name }}_schema)
+
+    async def update(
+            self,
+            {{ lower_name }}_id: int,
+            {{ lower_name }}_schema: {{ lower_name }}_schemas.{{ name }}Update
+    ) -> tables.{{ name }}:
+        return await self._update({{ lower_name }}_id, {{ lower_name }}_schema)
+
+    async def delete(self, {{ lower_name }}_id: int):
+        await self._delete({{ lower_name }}_id)
+
