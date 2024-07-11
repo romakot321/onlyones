@@ -61,6 +61,6 @@ class UserPostAccess(Base):
     post_id: M[UUID] = column(ForeignKey('posts.id'), primary_key=True)
     level: M[str] = column(String(1))
 
-    user: M['User'] = relationship(back_populates='accesses', foreign_keys=[user_id])
-    post: M['Post'] = relationship(back_populates='accesses')
+    user: M['User'] = relationship(back_populates='accesses', foreign_keys=[user_id], lazy='selectin')
+    post: M['Post'] = relationship(back_populates='accesses', lazy='selectin')
 

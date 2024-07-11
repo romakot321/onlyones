@@ -1,6 +1,7 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import (
     get_redoc_html,
     get_swagger_ui_html,
@@ -12,11 +13,29 @@ def register_exception(application):
     async def validation_exception_handler(request, exc):
         exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
         # or logger.error(f'{exc}')
-        print(request, exc_str)
+        print(await request.body(), exc_str)
         content = {'status_code': 422, 'message': exc_str, 'data': None}
         return JSONResponse(
             content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
         )
+
+
+def register_cors(application):
+    @application.middleware("http")
+    async def cors_handler(request: Request, call_next):
+        response: Response = await call_next(request)
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Origin'] = 'http://192.168.0.9:8080'
+        response.headers['Access-Control-Allow-Methods'] = '*'
+        response.headers['Access-Control-Allow-Headers'] = '*'
+        return response
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=['http://192.168.0.9:8080'],
+        allow_credentials='true',
+        allow_methods=['*'],
+        allow_headers=['*'],
+    )
 
 
 def init_web_application():
@@ -26,6 +45,7 @@ def init_web_application():
         redoc_url=None
     )
 
+    register_cors(application)
     register_exception(application)
 
     from app.routes.hello import router as hello_router

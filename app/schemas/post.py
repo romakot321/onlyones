@@ -45,15 +45,23 @@ class PostPatchSchema(BaseModel):
     is_public: bool | None = None
 
 
+class UserPostAccessSchema(BaseModel):
+    user_id: int
+    post_id: UUID
+    level: PostAccess
+
+
 class PostGetSchema(BaseModel):
     id: UUID
     title: str
     text: str
     is_public: bool
     author_id: int
+    accesses: list[UserPostAccessSchema]
 
 
 class PostListElementSchema(BaseModel):
     id: UUID
     title: str
+    author_id: int
 

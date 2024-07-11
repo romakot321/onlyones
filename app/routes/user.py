@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from app.schemas.user import UserPostSchema
 from app.schemas.user import UserGetSchema
+from app.schemas.user import UserGetFilterSchema
 from app.schemas.post import PostListElementSchema
 from app.repositories.user import UserRepository, get_request_actor
 
@@ -23,7 +24,15 @@ async def create_user(
 
 
 @router.get('', response_model=UserGetSchema)
-async def get_me(actor=Depends(get_request_actor)):
+async def get_user(
+        schema: UserGetFilterSchema = Depends(),
+        actor=Depends(get_request_actor),
+        repository: UserRepository = Depends()
+):
+    """If filters not specified then get user by access_token"""
+    user = await repository.get(username=schema.name, user_id=schema.id)
+    if user is not None:
+        return user
     return actor
 
 

@@ -41,6 +41,8 @@ class UserRepository:
             for k, v in zip(('name', 'id'), (username, user_id))
             if v is not None
         }
+        if not filters:
+            return
         return await self.service.get(**filters)
 
     async def get_posts(self, user_id, actor):

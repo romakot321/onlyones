@@ -26,7 +26,12 @@ class PostService(BaseService):
         return await self._create(**schema)
 
     async def get(self, **filters):
-        return await self._get_one(**filters)
+        return await self._get_one(
+            **filters
+        )
+
+    async def get_list(self, **filters):
+        return await self._get_list(**filters)
 
     async def update(self, post_id, schema):
         return await self._update(post_id, schema)
